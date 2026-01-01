@@ -1,6 +1,8 @@
-use std::env;
-use std::fs::File;
-use std::io::Read;
+use std::{
+  env,
+  fs::File,
+  io::Read
+};
 
 
 fn main() {
@@ -15,15 +17,32 @@ fn main() {
     }
 
     let file_path = &args[1];
-    let key_word  = &args[2];
+    let mut key_word  = args[2].clone();
 
-    //let flag = &args[2];
+    let flag: &str;
+
+    if let Some(arg_flag) = args.get(3) {
+        flag = arg_flag;
+    } else {
+        flag = "-d";
+    }
+
 
     let mut file = File::open(file_path).expect("file not found");
     let mut contents = String::new();
     file.read_to_string(&mut contents).expect("Cannot read file");
 
     let mut key_word_lines: Vec<&str> = Vec::new();
+
+
+    match flag {
+        "-i"=> {
+            contents = contents.to_lowercase();
+            key_word = key_word.to_lowercase();
+        },
+        "-d"=> {},
+        _=>  panic!("Invalid flag state"),
+    }
 
     //State machine that tracks if word is found in line.
     let key_word_vec: Vec<char> = key_word.chars().collect();
