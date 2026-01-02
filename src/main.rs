@@ -36,6 +36,8 @@ impl KeyLine {
     }
 }
 
+
+
 fn find_key_word_lines_d(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> {
 
     let mut key_word_lines: Vec<KeyLine> = Vec::new();
@@ -158,9 +160,34 @@ fn main() {
             panic!("Malformed flag");
         }
     }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn find_key_word_lines_d_test() {
+        let file_path: &str = "src/test.txt";
+        let key_word: &str  = "Test";
+
+        let flag: &str = "-d";
+
+
+        let mut file = File::open(&file_path).expect("file not found");
+        let mut contents = String::new();
+
+        file.read_to_string(&mut contents).expect("Cannot read file");
+
+
+        let key_word_lines = find_key_word_lines_d(&file_path, &contents, &key_word);
+        
+        assert_eq!(key_word_lines[0].line,"Hello my name is john" );
+        assert_eq!(key_word_lines[1].line,"john is the name, john I am" );
 
 
 
+    }
 
 
 }

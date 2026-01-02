@@ -1,4 +1,4 @@
 Hello my name is john
-Bob is not my name
+Bob is not my name, its John
 Jane is not my name
 john is the name, john I am
