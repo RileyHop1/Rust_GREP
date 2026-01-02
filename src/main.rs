@@ -36,7 +36,7 @@ impl KeyLine {
     }
 }
 
-fn find_key_word_lines(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> {
+fn find_key_word_lines_d(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> {
 
     let mut key_word_lines: Vec<KeyLine> = Vec::new();
     let mut line_number: u32 = 0;
@@ -60,6 +60,32 @@ fn find_key_word_lines(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> {
     key_word_lines
 }
 
+//Ignore Case
+fn find_key_word_lines_i(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> {
+
+    let mut key_word_lines: Vec<KeyLine> = Vec::new();
+    let mut line_number: u32 = 0;
+
+    let key = key.to_lowercase();
+
+    for line in contents.lines() {
+        let line = line.to_lowercase();
+        if line.contains(&key) {
+
+            key_word_lines.push(
+                KeyLine::new(
+                    line.to_string(),
+                    path.to_string(),
+                    line_number
+                )
+            );
+
+        }
+        line_number += 1;
+
+    }
+    key_word_lines
+}
 fn main() {
 
 
@@ -87,11 +113,54 @@ fn main() {
 
     file.read_to_string(&mut contents).expect("Cannot read file");
 
-    let key_word_lines = find_key_word_lines(&file_path, &contents, &key_word);
+    match flag {
+        "-h" | "--help" => {
+            println!(
+                "Usage: myprog <file> <keyword> [flag]
 
-    for key_line in key_word_lines {
-        key_line.print_line_and_line_number();
+                Flags:
+                -d     Display lines containing the keyword
+                -l     Display lines containing the keyword with line numbers
+                -i     Case-insensitive search
+                -il    Case-insensitive search with line numbers
+                -h     Show this help message
+
+                If no flag is provided, the default is -d."
+            )
+        },
+        "-d" => {
+            let key_word_lines = find_key_word_lines_d(&file_path, &contents, &key_word);
+
+            for key_line in key_word_lines {
+                key_line.print_line();
+            }
+
+        },
+        "-l" => {
+            let key_lines = find_key_word_lines_d(&file_path, &contents, &key_word);
+            for key_line in key_lines {
+                key_line.print_line_and_line_number();
+            }
+        },
+        "-i" => {
+            let key_lines = find_key_word_lines_i(&file_path, &contents, &key_word);
+            for key_line in key_lines {
+                key_line.print_line();
+            }
+        },
+        "-il" => {
+            let key_lines = find_key_word_lines_i(&file_path, &contents, &key_word);
+            for key_line in key_lines {
+                key_line.print_line_and_line_number();
+            }
+        }
+        _=> {
+            panic!("Malformed flag");
+        }
     }
+
+
+
 
 
 }
