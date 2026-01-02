@@ -3,7 +3,7 @@ A simple GREP clone made in Rust.
 
 # Commands
 
-Usage: myprog <file> <keyword> [flag]
+Usage: myprog [file] [keyword] [flag]
 
                 Flags:
                 -d     Display lines containing the keyword
