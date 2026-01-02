@@ -71,8 +71,8 @@ fn find_key_word_lines_i(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> 
     let key = key.to_lowercase();
 
     for line in contents.lines() {
-        let line = line.to_lowercase();
-        if line.contains(&key) {
+        let line_i = line.to_lowercase();
+        if line_i.contains(&key) {
 
             key_word_lines.push(
                 KeyLine::new(
@@ -167,23 +167,41 @@ mod tests {
     use super::*;
 
     #[test]
-    fn find_key_word_lines_d_test() {
-        let file_path: &str = "src/test.txt";
-        let key_word: &str  = "Test";
+    fn find_key_word_test() {
 
-        let flag: &str = "-d";
-
+        let file_path = "src/test.txt";
+        let key_word  = "john";
 
         let mut file = File::open(&file_path).expect("file not found");
         let mut contents = String::new();
 
         file.read_to_string(&mut contents).expect("Cannot read file");
 
-
         let key_word_lines = find_key_word_lines_d(&file_path, &contents, &key_word);
-        
+
         assert_eq!(key_word_lines[0].line,"Hello my name is john" );
         assert_eq!(key_word_lines[1].line,"john is the name, john I am" );
+
+
+
+    }
+
+    #[test]
+    fn find_key_word_ignore_case_test() {
+
+        let file_path = "src/test.txt";
+        let key_word  = "john";
+
+        let mut file = File::open(&file_path).expect("file not found");
+        let mut contents = String::new();
+
+        file.read_to_string(&mut contents).expect("Cannot read file");
+
+        let key_word_lines = find_key_word_lines_i(&file_path, &contents, &key_word);
+
+        assert_eq!(key_word_lines[0].line,"Hello my name is john" );
+        assert_eq!(key_word_lines[1].line,"Bob is not my name, its John" );
+        assert_eq!(key_word_lines[2].line,"john is the name, john I am" );
 
 
 
