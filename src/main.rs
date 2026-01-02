@@ -37,7 +37,21 @@ impl KeyLine {
 }
 
 
-
+/// Finds all lines in a file that contain the given keyword (case-sensitive).
+///
+/// This function scans the provided file contents line-by-line and
+/// returns a list of [`KeyLine`] entries for each matching line.  
+/// Matching is **case-sensitive**.
+///
+/// # Arguments
+///
+/// * `path` — Path to the file being searched. Used only for metadata.
+/// * `contents` — Full text contents of the file.
+/// * `key` — Keyword to search for (case-sensitive).
+///
+/// # Returns
+///
+/// A vector of [`KeyLine`] entries, one for every line that contains `key`.
 fn find_key_word_lines_d(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> {
 
     let mut key_word_lines: Vec<KeyLine> = Vec::new();
@@ -62,7 +76,22 @@ fn find_key_word_lines_d(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> 
     key_word_lines
 }
 
-//Ignore Case
+/// Finds all lines in a file that contain the given keyword (case-insensitive).
+///
+/// This function converts both the `contents` and `key` to lowercase internally
+/// before performing the search. It returns a list of [`KeyLine`] entries for
+/// each matching line.
+///
+/// # Arguments
+///
+/// * `path` — Path to the file being searched. Used only for metadata.
+/// * `contents` — Full text contents of the file.
+/// * `key` — Keyword to search for (case-insensitive).
+///
+/// # Returns
+///
+/// A vector of [`KeyLine`] entries, one for every line that matches `key`,
+/// ignoring case.
 fn find_key_word_lines_i(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> {
 
     let mut key_word_lines: Vec<KeyLine> = Vec::new();
@@ -88,14 +117,41 @@ fn find_key_word_lines_i(path: &str ,contents: &str, key: &str) -> Vec<KeyLine> 
     }
     key_word_lines
 }
+
+/// Prints the program usage guide and available command-line flags.
+///
+/// This function displays information about how to correctly use the
+/// program, including required arguments and optional flags. It is
+/// typically invoked when the user supplies the `-h` or `--help` flag,
+/// or when the user provides insufficient or malformed arguments.
+fn print_help() {
+    println!(
+                "Usage: myprog <file> <keyword> [flag]
+
+                Flags:
+                -d     Display lines containing the keyword
+                -l     Display lines containing the keyword with line numbers
+                -i     Case-insensitive search
+                -il    Case-insensitive search with line numbers
+                -h     Show this help message
+
+                If no flag is provided, the default is -d."
+            )
+}
 fn main() {
 
 
     //grabs the input arguments8
     let args: Vec<String> = env::args().collect();
 
-    if args.len() < 3 {
-        println!("Please provide a file path and keyword");
+    if args.len() == 2 
+        && args[1] == "-h" 
+        || args[1] == "--help" {
+
+        print_help();
+        return;
+    } else if args.len() < 3 {
+        println!("Please provid a file path and keyward or -h for commands");
         return;
     }
 
@@ -117,18 +173,7 @@ fn main() {
 
     match flag {
         "-h" | "--help" => {
-            println!(
-                "Usage: myprog <file> <keyword> [flag]
-
-                Flags:
-                -d     Display lines containing the keyword
-                -l     Display lines containing the keyword with line numbers
-                -i     Case-insensitive search
-                -il    Case-insensitive search with line numbers
-                -h     Show this help message
-
-                If no flag is provided, the default is -d."
-            )
+            print_help(); 
         },
         "-d" => {
             let key_word_lines = find_key_word_lines_d(&file_path, &contents, &key_word);
